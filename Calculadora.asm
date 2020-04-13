@@ -64,7 +64,7 @@ case_soma:
     li $a0, 2                       # Carrega o numero de operandos em $a0
     la $a1, requerir_operando1_soma # Carrega a string que pede o primeiro operando da soma em $a1 
     la $a2, requerir_operando2_soma # Carrega a string que pede o segundo operando da soma em $a2
-    jal le_operandos                # Cham sub_rotina le operandos   
+    jal le_operandos                # Chama sub_rotina le operandos   
 
     move $a0, $v0                   # Carrega o primeiro operando obtido por le_operandos em $a0
     move $a1, $v1                   # Carrega o segundo operando obtido por le_operandos em $a1
@@ -72,6 +72,7 @@ case_soma:
 
     j cases_end                     
 
+#Equivalente à soma, mas com subtração
 case_subtracao:
     li $a0, 2
     la $a1, requerir_operando1_sub
@@ -84,6 +85,7 @@ case_subtracao:
 
     j cases_end
 
+#Equivalente à soma, mas com multiplicação
 case_multiplicacao:
     li $a0, 2
     la $a1, requerir_operando1_mult
@@ -95,7 +97,8 @@ case_multiplicacao:
     jal multiplicacao
 
     j cases_end
-
+    
+#Equivalente à soma, mas com divisão
 case_divisao:
     li $a0, 2
     la $a1, requerir_operando1_div
@@ -108,6 +111,7 @@ case_divisao:
 
     j cases_end
 
+#Equivalente à soma, mas com pontenciação
 case_potencia:
     li $a0, 2
     la $a1, requerir_operando1_pot
@@ -121,25 +125,27 @@ case_potencia:
     j cases_end
 
 case_raiz_quadrada:
-    li $a0, 1
-    la $a1, requerir_operando_raiz
-    jal le_operandos    
+    li $a0, 1 # Carrega o numero de operandos em $a0
+    la $a1, requerir_operando_raiz # Carrega a string que pede o operando da raiz em $a1 
+    jal le_operandos    # Chama sub_rotina le operandos
 
-    move $a0, $v0
-    jal raiz_quadrada
+    move $a0, $v0 # Carrega o operando obtido por le_operandos em $a0
+    jal raiz_quadrada # Chama sub-rotina raiz
     
     j cases_end
 
+#Equivalente à raiz, mas com tabuada
 case_tabuada:
     li $a0, 1
     la $a1, requerir_operando_tabuada
     jal le_operandos    
 
     move $a0, $v0
-    jal raiz_quadrada
+    jal tabuada
     
     j cases_end
-
+    
+#Equivalente à soma, mas com IMC
 case_imc:
     li $a0, 2
     la $a1, requerir_operando1_imc
@@ -152,6 +158,7 @@ case_imc:
     
     j cases_end
 
+#Equivalente à raiz, mas com fatorial
 case_fatorial:
     li $a0, 1
     la $a1, requerir_operando_fatorial
@@ -162,6 +169,7 @@ case_fatorial:
 
     j cases_end
 
+#Equivalente à raiz, mas com a sequencia de Fibonacci
 case_fibonacci:
     li $a0, 1
     la $a1, requerir_operando_fibonacci
@@ -176,6 +184,7 @@ cases_end:
     
     j main_loop
 
+#Cuida do caso no qual o id inserido é invalido
 id_operacao_invalido:
     la $a0, id_invalido
     syscall
@@ -187,20 +196,20 @@ main_loop_end:
     syscall 
 
 
-# Sub-rotina que receb uma parcela da soma em $a0,
+# Sub-rotina que recebe uma parcela da soma em $a0,
 # outra em $a1 e retorna o resultado da soma em $v0
 soma:
     add $v0, $a0, $a1   # $v0 = $a0 + $a1
     jr $ra              
 
 
-# Sub-rotina que receb o minuendo da subtracao em $a0,
+# Sub-rotina que recebe o minuendo da subtracao em $a0,
 # o subtraendo em $a1 e retorna a diferenca em $v0
 subtracao:
     sub $v0, $a0, $a1   # $v0 = $a0 - $a1       
     jr $ra               
 
-# Sub-rotina que receb um fator da multiplicacao em $a0,
+# Sub-rotina que recebe um fator da multiplicacao em $a0,
 # outro em $a1 e retorna o produto em $v0
 multiplicacao:
     mul $v0, $a0, $a1   # $v0 = $a0 * $a1
@@ -209,7 +218,7 @@ multiplicacao:
 # Sub-rotina que receb um dividendo em $a0,
 # um divisor em $a1 e retorna o quociente em $v0
 divisao:
-    div $v0, $a0, $a1   
+    div $v0, $a0, $a1   # $v0 = $a0 / $a1
     jr $ra
 
 
@@ -228,7 +237,7 @@ potencia:
     sw $a1, 0($sp)                              # Salva $a1 na stack
 
     mul $a0, $t0, $t0                           # $a0 = $t0 * $t0
-    div $a1, $t1, $t2                           # $a1 = $t2 / 2
+    div $a1, $t1, $t2                           # $a1 = $t1 / 2 
     jal potencia                                # Chama sub-rotina potencia recursivamente
 
     lw $ra, 8($sp)                              # Recupera $ra da stack
