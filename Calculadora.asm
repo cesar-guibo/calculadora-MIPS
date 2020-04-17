@@ -1,7 +1,7 @@
 # Dvisao deve retornar o resto ?
 # TODO Strings que devem ser impressas
+# No caso IMC, peso primeiro, altura dps
 # TODO imprime_resultado
-# TODO raiz_quadrada
 # TODO tabuada 
     .data
 
@@ -258,10 +258,33 @@ potencia_caso_base:
 
 
 raiz_quadrada:
+	add $t0, $a0, $zero                     #t0 = a0
+	li $t1, 0				#t1 = 0
+	li $t5, 2				#t5 = 2
+	li $t6, 1				#t6 = 1
+	add $t2, $a0, $zero			#t2 = a0
+	div $t3, $t0, 2				#t3 = a0/2
+	subi $sp, $sp, 4			#subtrai 4 posicoes da stack
+	sw $ra, 0($sp)				#Guarda o return adress
+	jal loop_raiz
+	lw $ra, 0($sp)				#Recupera o return adress
+	addi $sp, $sp, 4			#Volta a stack a posicao inicial
+	jr $ra
 
+loop_raiz:
+	div $t4, $t0, $t2			#t4 = t0/t2
+	add $t4, $t4, $t2			#t4 = t4 + t2
+	div $t2, $t4, $t5			#t2 = t4/2
+	add $t1, $t1, $t6			#t1++
+	blt $t1, $t3, loop_raiz			#if t1<t3, loop
+	move $v0, $t2				#Retorna t2
+	jr $ra
 tabuada:
 
 imc:
+	mul $t0, $a1, $a1 #t0 = altura^2
+	div $v0, $a0, $a1  #v0 = ao/a1
+	jr $ra
 
 # Sub-rotina que recebe como parametro o numero, o qual
 # se deseja calcular o fatorial em $a0 e retorna o valor
