@@ -1,9 +1,9 @@
 # Dvisao deve retornar o resto ?
 # TODO Strings que devem ser impressas
+# No caso IMC, peso primeiro, altura dps
 # TODO imprime_resultado
 # TODO raiz_quadrada
 # TODO fatorial
-# TODO imc
 # TODO fibonacci
 # TODO tabuada 
     .data
@@ -19,7 +19,7 @@ requerir_operando2_mult:        .asciiz "\n"
 requerir_operando1_div:         .asciiz "\n"
 requerir_operando2_div:         .asciiz "\n"
 requerir_operando1_pot:         .asciiz "\n"
-requrir_operando2_pot:          .asciiz "\n"
+requerir_operando2_pot:          .asciiz "\n"
 requerir_operando_raiz:         .asciiz "\n"
 requerir_operando_tabuada:      .asciiz "\n"
 requerir_operando1_imc:         .asciiz "\n"
@@ -262,6 +262,9 @@ raiz_quadrada:
 tabuada:
 
 imc:
+	mul $t0, $a1, $a1 #t0 = altura^2
+	div $v0, $a0, $a1  #v0 = ao/a1
+	jr $ra
 
 fatorial:
 
@@ -284,7 +287,7 @@ le_operandos:
     syscall
 
     # Se o numero de operandos que deve se ler e apenas um, finaliza operacao
-    bnei $t0, 2 le_operandos_end    # Se $t0 != 2 jump to le_operandos_end
+    bne $t0, 2 le_operandos_end    # Se $t0 != 2 jump to le_operandos_end
 
     move $t3, $v0                   # Salva o primeiro operando em $t3
     
