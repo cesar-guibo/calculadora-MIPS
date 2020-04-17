@@ -26,7 +26,7 @@ requerir_operando2_mult:
 	.asciiz "Digite o fator 2 da multiplicacao que deseja calcular\n"
 
 requerir_operando1_div:         
-	.asciiz "Digite o dividendo da divisoa que deseja calcular\n"
+	.asciiz "Digite o dividendo da divisao que deseja calcular\n"
 
 requerir_operando2_div:         
 	.asciiz "Digite o divisor da divisao que deseja calcular:\n"
@@ -329,12 +329,15 @@ tabuada:
 	li $v0, 1
 	move $a0, $t1
 	syscall
-	li $v0, 4
-	la $a0, espaco
-	syscall 
 	subi $sp, $sp, 4			#subtrai 4 posicoes da stack
 	sw $ra, 0($sp)				#Guarda o return adress
+	li $v0, 4				# Valor para a syscall imprimir uma string
+	la $a0, espaco				# Carrega string com espaco em $a0
+	syscall 
 	jal loop_tabuada
+    	li $v0, 4                       	# Valor para a syscall imprimir uma string
+    	la $a0, enter				# Carrega string com \n em $a0
+    	syscall
 	lw $ra, 0($sp)				#Recupera o return adress
 	addi $sp, $sp, 4			#Volta a stack a posicao inicial
 	jr $ra
