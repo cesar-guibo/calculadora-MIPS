@@ -6,26 +6,64 @@
 
     .align 0
 espaco:				.asciiz " "
-enter:				.asciiz "\n"
-requerir_id_operacao:           .asciiz "******  MENU  ******\nDigite 0 para sair\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDIgite 8 para calcular o IMC\nDIgite 9 para calcular o fatorial\nDigite 10 para calcular um numero da sequencia de fibonacci\n"
-requerir_operando1_soma:        .asciiz "Digite a primeira parcela da soma que deseja calcular:\n"
-requerir_operando2_soma:        .asciiz "Digite a segunda parcela da soma que deseja calcular:\n"
-requerir_operando1_sub:         .asciiz "Digite o aditivo da subtracao que deseja calcular\n"
-requerir_operando2_sub:         .asciiz "Digite o subtrativo da subtracao que deseja calcular\n"
-requerir_operando1_mult:        .asciiz "Digite o fator 1 da multiplicacao que deseja calcular\n"
-requerir_operando2_mult:        .asciiz "Digite o fator 2 da multiplicacao que deseja calcular\n"
-requerir_operando1_div:         .asciiz "Digite o dividendo da divisao que deseja calcular\n"
-requerir_operando2_div:         .asciiz "Digite o divisor da divisao que deseja calcular:\n"
-requerir_operando1_pot:         .asciiz "Digite a base da potencia que deseja calcular:\n"
-requerir_operando2_pot:         .asciiz "Digite o expoente da potencia que desja calcular:\n"
-requerir_operando_raiz:         .asciiz "Digite o numero que deseja calcular a raiz:\n"
-requerir_operando_tabuada:      .asciiz "Digite o numero que deseja calcular a tabuada\n"
-requerir_operando1_imc:         .asciiz "Digite o peso:\n"
-requerir_operando2_imc:         .asciiz "Digite a altura:\n"
-requerir_operando_fatorial:     .asciiz "Digite o numero que deseja calcular o fatorial:\n"
-requerir_operando_fibonacci:    .asciiz "Digite o indice da sequencia de fibonacci que deseja calcular:\n"
-id_invalido: 			.asciiz "O id da operacao digitado nao e valido\n"
-string_precede_resultado:       .asciiz "Resultado: "
+requerir_id_operacao:	.asciiz "******  MENU  ******\nDigite 0 para sair\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDigite 8 para calcular o IMC\nDigite 9 para calcular o fatorial\nDigite 10 para calcular um numero da sequencia de fibonacci\n"
+requerir_operando1_soma:        
+	.asciiz "Digite a primeira parcela da soma que deseja calcular:\n"
+
+requerir_operando2_soma:        
+	.asciiz "Digite a segunda parcela da soma que deseja calcular:\n"
+
+requerir_operando1_sub:         
+	.asciiz "Digite o aditivo da subtracao que deseja calcular\n"
+
+requerir_operando2_sub:         
+	.asciiz "Digite o subtrativo da subtracao que deseja calcular\n"
+
+requerir_operando1_mult:        
+	.asciiz "Digite o fator 1 da multiplicacao que deseja calcular\n"
+
+requerir_operando2_mult:        
+	.asciiz "Digite o fator 2 da multiplicacao que deseja calcular\n"
+
+requerir_operando1_div:         
+	.asciiz "Digite o dividendo da divisoa que deseja calcular\n"
+
+requerir_operando2_div:         
+	.asciiz "Digite o divisor da divisao que deseja calcular:\n"
+	
+requerir_operando1_pot:         
+	.asciiz "Digite a base da potencia que deseja calcular:\n"
+
+requerir_operando2_pot:         
+	.asciiz "Digite o expoente da potencia que desja calcular:\n"
+
+requerir_operando_raiz:         
+	.asciiz "Digite o numero que deseja calcular a raiz:\n"
+
+requerir_operando_tabuada:      
+	.asciiz "Digite o numero que deseja calcular a tabuada\n"
+
+requerir_operando1_imc:         
+	.asciiz "Digite o peso:\n"
+
+requerir_operando2_imc:         
+	.asciiz "Digite a altura:\n"
+
+requerir_operando_fatorial:     
+	.asciiz "Digite o numero que deseja calcular o fatorial:\n"
+
+requerir_operando_fibonacci:    
+	.asciiz "Digite o n para calcular o n-esimo fibonacci:\n"
+
+id_invalido: 			
+	.asciiz "O id da operacao digitado nao e valido\n"
+
+string_precede_resultado: 
+	.asciiz "Resultado: "
+
+enter:				
+	.asciiz "\n"
+
 
     .align 2
 cases_table: .word case_sair, case_soma, case_subtracao, case_multiplicacao, 
@@ -49,11 +87,11 @@ main_loop:
 
     # Verifica se o id_operacao e invalido 
     slti $t0, $s2, 11                       # $t0 = ($v0 < 11)
-    beq $t0, $zero, id_operacao_invalido    # Se $t0 = false jump to id_operacao_invalido
+    beq $t0, $zero, id_operacao_invalido    # Se !$t0 jump to id_operacao_invalido
 
     # Vai para o case da operacao selecionada
     sll $t0, $s2, 2                         # $t0 = id da operacao * 4
-    add $t0, $t0, $s0                           # $t0 = &cases_table[id_operacao]
+    add $t0, $t0, $s0                       # $t0 = &cases_table[id_operacao]
     lw $t1, 0($t0)                          # $t1 = cases_table[id_operacao] 
     jr $t1                                  # Jump to cases_table[id_operacao] 
 
@@ -72,7 +110,7 @@ case_soma:
 
     j cases_end                     
 
-#Equivalente � soma, mas com subtra��o
+#Equivalente a soma, mas com subtracao
 case_subtracao:
     li $a0, 2
     la $a1, requerir_operando1_sub
@@ -85,7 +123,7 @@ case_subtracao:
 
     j cases_end
 
-#Equivalente � soma, mas com multiplica��o
+#Equivalente a soma, mas com multiplicacao
 case_multiplicacao:
     li $a0, 2
     la $a1, requerir_operando1_mult
@@ -98,7 +136,7 @@ case_multiplicacao:
 
     j cases_end
     
-#Equivalente � soma, mas com divis�o
+#Equivalente a soma, mas com divisao
 case_divisao:
     li $a0, 2
     la $a1, requerir_operando1_div
@@ -111,7 +149,7 @@ case_divisao:
 
     j cases_end
 
-#Equivalente � soma, mas com pontencia��o
+#Equivalente a soma, mas com pontenciacao
 case_potencia:
     li $a0, 2
     la $a1, requerir_operando1_pot
@@ -134,7 +172,7 @@ case_raiz_quadrada:
     
     j cases_end
 
-#Equivalente � raiz, mas com tabuada
+#Equivalente a raiz, mas com tabuada
 case_tabuada:
     li $a0, 1
     la $a1, requerir_operando_tabuada
@@ -145,7 +183,7 @@ case_tabuada:
     
     j cases_end
     
-#Equivalente � soma, mas com IMC
+#Equivalente a soma, mas com IMC
 case_imc:
     li $a0, 2
     la $a1, requerir_operando1_imc
@@ -158,7 +196,7 @@ case_imc:
     
     j cases_end
 
-#Equivalente � raiz, mas com fatorial
+#Equivalente a raiz, mas com fatorial
 case_fatorial:
     li $a0, 1
     la $a1, requerir_operando_fatorial
@@ -169,7 +207,7 @@ case_fatorial:
 
     j cases_end
 
-#Equivalente � raiz, mas com a sequencia de Fibonacci
+#Equivalente a raiz, mas com a sequencia de Fibonacci
 case_fibonacci:
     li $a0, 1
     la $a1, requerir_operando_fibonacci
@@ -185,7 +223,7 @@ cases_end:
     
     j main_loop
 
-#Cuida do caso no qual o id inserido � invalido
+#Cuida do caso no qual o id inserido a invalido
 id_operacao_invalido:
     la $a0, id_invalido
     syscall
@@ -325,26 +363,26 @@ imc:
 # se deseja calcular o fatorial em $a0 e retorna o valor
 # do fatorial em $v0
 fatorial:
-    slti $t0, $a0, 2                            #$t0 = ($a0 < 2)
-    bne $t0, $zero, fatorial_base_case          # Se ($t0 != 0) jump to fatorial_base_case
+    slti $t0, $a0, 2                    #$t0 = ($a0 < 2)
+    bne $t0, $zero, fatorial_base_case  # Se ($t0 != 0) jump to fatorial_base_case
 
-    subi $sp, $sp, 8                            # Cresce a stack em 8 enderecos
-    sw $ra, 4($sp)                              # Salva o return address na stack
-    sw $a0, 0($sp)                              # Salva o valor de $a0 na stack
+    subi $sp, $sp, 8                    # Cresce a stack em 8 enderecos
+    sw $ra, 4($sp)                      # Salva o return address na stack
+    sw $a0, 0($sp)                      # Salva o valor de $a0 na stack
 
-    subi $a0, $a0, 1                            # $a0 = $a0 - 1
-    jal fatorial                                # Chama recursivamente fatorial
+    subi $a0, $a0, 1                    # $a0 = $a0 - 1
+    jal fatorial                        # Chama recursivamente fatorial
 
-    lw $a0, 0($sp)                              # Recupera o valor de $a0 da stack
-    lw $ra, 4($sp)                              # Recupera o return address da stack
-    addi $sp, $sp, 8                            # Enclohe a stack em 8 enderecos
+    lw $a0, 0($sp)                      # Recupera o valor de $a0 da stack
+    lw $ra, 4($sp)                      # Recupera o return address da stack
+    addi $sp, $sp, 8                    # Enclohe a stack em 8 enderecos
 
-    mul $v0, $a0, $v0                           # $v0 = $a0 * fatorial($a0 - 1)
+    mul $v0, $a0, $v0                   # $v0 = $a0 * fatorial($a0 - 1)
 
     jr $ra
 
 fatorial_base_case:
-    li $v0, 1                                   # Caso base fatorial(0) == fatorial(1) == 1
+    li $v0, 1                           # Caso base fatorial(0) == fatorial(1) == 1
     jr $ra
 
 # Sub-rotina que recebe como parametro o indice da 
@@ -376,8 +414,7 @@ fibonacci:
     jr $ra
 
 fibonacci_base_case_zero:
-	move $v0, $zero                         # fibonacci(0) == 0
-	jr $ra
+	move $v0, $zero                         # fibonacci(0) == 0 jr $ra
 
 fibonacci_base_case_one:
 	li $v0, 1                               # fibonacci(0) == 1
@@ -406,7 +443,7 @@ le_operandos:
     move $t3, $v0                   # Salva o primeiro operando em $t3
     
     li $v0, 4                       # Valor para syscall imprimir string 
-    move $a0, $a2                   # Carrega a string que requisita o operando1 como argumento para syscall
+    move $a0, $a2                   # Carrega a string que requisita o operando2 como argumento para syscall
     syscall                         
 
     li $v0, 5                       # Valor para syscall ler um int
