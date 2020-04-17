@@ -3,11 +3,13 @@
     .data
 
     .align 0
-requerir_id_operacao:           .asciiz "******  MENU  ******\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDIgite 8 para calcular o IMC\nDIgite 9 para calcular o fatorial\nDigite 10 para calcular a sequencia de fibonacci\n"
-requerir_operando1_soma:        .asciiz "Digite a primeira parcela da soma:\n"
-requerir_operando2_soma:        .asciiz "Digite a segunda parcela da soma:\n"
-requerir_operando1_sub:         .asciiz "Digite o aditivo da subtracao:\n"
-requerir_operando2_sub:         .asciiz "Digite o subtrativo da subtracao:\n"
+espaco:				.asciiz " "
+requerir_id_operacao:           .asciiz "******  MENU  ******\nDigite 0 para sair\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDIgite 8 para calcular o IMC\nDIgite 9 para calcular o fatorial\nDigite 10 para calcular um numero da sequencia de fibonacci\n"
+requerir_operando1_soma:        .asciiz "Digite a primeira parcela da soma que deseja calcular:\n"
+requerir_operando2_soma:        .asciiz "Digite a segunda parcela da soma que deseja calcular:\n"
+requerir_operando1_sub:         .asciiz "Digite o aditivo da subtracao que deseja calcular\n"
+requerir_operando2_sub:         .asciiz "Digite o subtrativo da subtracao que deseja calcular\n"
+>>>>>>> 7ac3fe9e66d466b3034ee24132387ce7de849ef6
 requerir_operando1_mult:        .asciiz "Digite o fator 1 da multiplicacao que deseja calcular\n"
 requerir_operando2_mult:        .asciiz "Digite o fator 2 da multiplicacao que deseja calcular\n"
 requerir_operando1_div:         .asciiz "Digite o dividendo da divisoa que deseja calcular\n"
@@ -251,7 +253,7 @@ potencia_caso_base:
     move $v0, $a0                               # $v0 = $a0
     jr $ra                                      # Retorna $v0
 
-
+#Sub-rotina que recebe o radicando em $a0 e retorna o resultado em v0
 raiz_quadrada:
 	add $t0, $a0, $zero                     #t0 = a0
 	li $t1, 0				#t1 = 0
@@ -274,9 +276,43 @@ loop_raiz:
 	blt $t1, $t3, loop_raiz			#if t1<t3, loop
 	move $v0, $t2				#Retorna t2
 	jr $ra
+
+
+# Sub-rotina que recebe o número que queremos a tabuada em $a0 e 
+# imprime a sua tabuada inteira, de 1 a 10. Nao tem retorno
 tabuada:
-	
-	
+	li $t0, 1 				#t0 = 0
+	add $t1, $a0, $zero			#t1 = a0
+	li $t2, 1				#t2 = 1
+	li $t3, 10				#t3 = 10
+	add $t4, $a0, $zero			#t4 = a0
+	li $v0, 1
+	move $a0, $t1
+	syscall
+	li $v0, 4
+	la $a0, espaco
+	syscall 
+	subi $sp, $sp, 4			#subtrai 4 posicoes da stack
+	sw $ra, 0($sp)				#Guarda o return adress
+	jal loop_tabuada
+	lw $ra, 0($sp)				#Recupera o return adress
+	addi $sp, $sp, 4			#Volta a stack a posicao inicial
+	jr $ra
+
+loop_tabuada:
+	add $t1, $t1, $t4		#t1 = t1 + a0
+	add $t0, $t0, $t2		#t0++
+	li $v0, 1
+	move $a0, $t1
+	syscall
+	li $v0, 4
+	la $a0, espaco
+	syscall 
+	blt  $t0, $t3, loop_tabuada	#if t0<10 loop
+	jr $ra
+
+
+#Sub-rotina que recebe o peso em $a0 e a altura em $a1 e retorna o IMC em $v0
 imc:
 	mul $t0, $a1, $a1 #t0 = altura^2
 	div $v0, $a0, $t0  #v0 = ao/a1
