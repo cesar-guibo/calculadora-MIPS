@@ -268,13 +268,13 @@ imc:
 # do fatorial em $v0
 fatorial:
     slti $t0, $a0, 2
-    beq $t0, $zero, fatorial_base_case
+    bne $t0, $zero, fatorial_base_case
 
     subi $sp, $sp, 8
     sw $ra, 4($sp)
     sw $a0, 0($sp)
 
-    subi $a0, $a0, -1
+    subi $a0, $a0, 1
     jal fatorial
 
     lw $a0, 0($sp)
@@ -318,11 +318,11 @@ fibonacci:
     jr $ra
 
 fibonacci_base_case_zero:
-	li $v0, 0
+	move $v0, $zero
 	jr $ra
 
 fibonacci_base_case_one:
-	li $v1, 0
+	li $v0, 1
 	jr $ra
 
 
