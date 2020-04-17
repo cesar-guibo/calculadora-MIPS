@@ -6,6 +6,7 @@
     .data
 
     .align 0
+espaco:				.asciiz " "
 requerir_id_operacao:           .asciiz "******  MENU  ******\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDIgite 8 para calcular o IMC\nDIgite 9 para calcular o fatorial\nDigite 10 para calcular um numero da sequencia de fibonacci\nDigite 0 para sair\n"
 requerir_operando1_soma:        .asciiz "Digite a primeira parcela da soma que deseja calcular:\n"
 requerir_operando2_soma:        .asciiz "Digite a segunda parcela da soma que deseja calcular:\n"
@@ -280,6 +281,35 @@ loop_raiz:
 	move $v0, $t2				#Retorna t2
 	jr $ra
 tabuada:
+	li $t0, 1 				#t0 = 0
+	add $t1, $a0, $zero			#t1 = a0
+	li $t2, 1				#t2 = 1
+	li $t3, 10				#t3 = 10
+	add $t4, $a0, $zero			#t4 = a0
+	li $v0, 1
+	move $a0, $t1
+	syscall
+	li $v0, 4
+	la $a0, espaco
+	syscall 
+	subi $sp, $sp, 4			#subtrai 4 posicoes da stack
+	sw $ra, 0($sp)				#Guarda o return adress
+	jal loop_tabuada
+	lw $ra, 0($sp)				#Recupera o return adress
+	addi $sp, $sp, 4			#Volta a stack a posicao inicial
+	jr $ra
+
+loop_tabuada:
+	add $t1, $t1, $t4		#t1 = t1 + a0
+	add $t0, $t0, $t2		#t0++
+	li $v0, 1
+	move $a0, $t1
+	syscall
+	li $v0, 4
+	la $a0, espaco
+	syscall 
+	blt  $t0, $t3, loop_tabuada	#if t0<10 loop
+	jr $ra
 
 imc:
 	mul $t0, $a1, $a1 #t0 = altura^2
