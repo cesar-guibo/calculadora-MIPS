@@ -2,9 +2,6 @@
 # TODO Strings que devem ser impressas
 # TODO imprime_resultado
 # TODO raiz_quadrada
-# TODO fatorial
-# TODO imc
-# TODO fibonacci
 # TODO tabuada 
     .data
 
@@ -26,12 +23,13 @@ requerir_operando1_imc:         .asciiz "\n"
 requerir_operando2_imc:         .asciiz "\n"
 requerir_operando_fatorial:     .asciiz "\n"
 requerir_operando_fibonacci:    .asciiz "\n"
-resultados:                     .asciiz "\n"
+id_invalido: 			.asciiz "\n"
+string_precede_resultado:       .asciiz "\n"
 
     .align 2
 cases_table: .word case_sair, case_soma, case_subtracao, case_multiplicacao, 
-                  case_divisao, case_potencia, case_raiz_quadrada, case_tabuada,
-                  case_imc, case_fatorial, case_fibonacci
+                  case_divisao, case_potencia, case_raiz_quadrada,
+		  case_tabuada, case_imc, case_fatorial, case_fibonacci
 
 
     .text
@@ -46,13 +44,14 @@ main_loop:
 
     li $v0, 5                               # $v0 = 5, syscall le int
     syscall                                 # Le o id da operacao
+    move $s2, $v0 			    # Carrega o id da operacao em $s2
 
     # Verifica se o id_operacao e invalido 
-    slti $t0, $v0, 11                       # $t0 = ($v0 < 11)
+    slti $t0, $s2, 11                       # $t0 = ($v0 < 11)
     beq $t0, $zero, id_operacao_invalido    # Se $t0 = false jump to id_operacao_invalido
 
     # Vai para o case da operacao selecionada
-    sll $t0, $v0, 2                         # $t0 = id da operacao * 4
+    sll $t0, $s2, 2                         # $t0 = id da operacao * 4
     move $t0, $s0                           # $t0 = &cases_table[id_operacao]
     lw $t1, 0($t0)                          # $t1 = cases_table[id_operacao] 
     jr $t1                                  # Jump to cases_table[id_operacao] 
@@ -179,7 +178,8 @@ case_fibonacci:
     jal fibonacci
 
 cases_end:
-    move $a0, $v0
+    move $a0, $s2 		 # Carrega o id da operacao para $a0
+    move $a1, $v0 		 # Carrega o valor retornado pela operacao em $a1
     jal imprime_resultado
     
     j main_loop
@@ -263,9 +263,68 @@ tabuada:
 
 imc:
 
+# Sub-rotina que recebe como parametro o numero, o qual
+# se deseja calcular o fatorial em $a0 e retorna o valor
+# do fatorial em $v0
 fatorial:
+    slti $t0, $a0, 2
+    beq $t0, $zero, fatorial_base_case
 
+    subi $sp, $sp, 8
+    sw $ra, 4($sp)
+    sw $a0, 0($sp)
+
+    subi $a0, $a0, -1
+    jal fatorial
+
+    lw $a0, 0($sp)
+    lw $ra, 4($sp)
+    addi $sp, $sp, 8
+
+    mul $v0, $a0, $v0
+
+    jr $ra
+
+fatorial_base_case:
+    li $v0, 1
+    jr $ra
+
+# Sub-rotina que recebe como parametro o indice da 
+# sequencia de fibonacci desejado em $a0 e retorna 
+# o valor desse numero de fibonacci
 fibonacci:
+    beq $a0, $zero fibonacci_base_case_zero
+    beq $a0, 1, fibonacci_base_case_one
+
+    subi $sp, $sp, 12
+    sw $ra, 8($sp)
+    sw $a0, 4($sp)
+    sw $s0, 0($sp) 
+   
+    subi $a0, $a0, 1
+    jal fibonacci
+    move $s0, $v0
+
+    subi $a0, $a0, 1
+    jal fibonacci
+
+    addi $v0, $s0, $v0
+    
+    lw $s0, 0($sp) 
+    lw $a0, 4($sp)
+    lw $ra, 8($sp)
+    addi $sp, $sp, 12
+
+    jr $ra
+
+fibonacci_base_case_zero:
+	li $v0, 0
+	jr $ra
+
+fibonacci_base_case_one:
+	li $v1, 0
+	jr $ra
+
 
 
 # Sub-rotina que recebe como parametros o numero de operandos
@@ -304,4 +363,16 @@ le_operandos_end:
 
 
 imprime_resultado:
+    move $t0, $a0
 
+    la $a0, string_precede_resultado
+    li $v0, 4
+    syscall
+
+    move $a0, $a1
+    li $v0, 1
+    syscall
+
+    move $a0, $t0
+
+    jr $ra
