@@ -2,7 +2,6 @@
 # TODO Strings que devem ser impressas
 # No caso IMC, peso primeiro, altura dps
 # TODO imprime_resultado
-# TODO raiz_quadrada
 # TODO tabuada 
     .data
 
@@ -262,7 +261,12 @@ raiz_quadrada:
 	li $t6, 1				#t6 = 1
 	add $t2, $a0, $zero			#t2 = a0
 	div $t3, $t0, 2				#t3 = a0/2
+	subi $sp, $sp, 4			#subtrai 4 posicoes da stack
+	sw $ra, 0($sp)
 	jal loop_raiz
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
 
 loop_raiz:
 	div $t4, $t0, $t2			#t4 = t0/t2
@@ -271,6 +275,7 @@ loop_raiz:
 	add $t1, $t1, $t6			#t1++
 	blt $t1, $t3, loop			#if t1<t3, loop
 	move $t2, $v0				#Retorna t2
+	jr $ra
 tabuada:
 
 imc:
