@@ -262,10 +262,10 @@ raiz_quadrada:
 	add $t2, $a0, $zero			#t2 = a0
 	div $t3, $t0, 2				#t3 = a0/2
 	subi $sp, $sp, 4			#subtrai 4 posicoes da stack
-	sw $ra, 0($sp)
+	sw $ra, 0($sp)				#Guarda o return adress
 	jal loop_raiz
-	lw $ra, 0($sp)
-	addi $sp, $sp, 4
+	lw $ra, 0($sp)				#Recupera o return adress
+	addi $sp, $sp, 4			#Volta a stack a posicao inicial
 	jr $ra
 
 loop_raiz:
