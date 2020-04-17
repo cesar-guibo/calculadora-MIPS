@@ -6,11 +6,11 @@
     .data
 
     .align 0
-requerir_id_operacao:           .asciiz "\n"
-requerir_operando1_soma:        .asciiz "\n"
-requerir_operando2_soma:        .asciiz "\n"
-requerir_operando1_sub:         .asciiz "\n"
-requerir_operando2_sub:         .asciiz "\n"
+requerir_id_operacao:           .asciiz "******  MENU  ******\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDIgite 8 para calcular o IMC\nDIgite 9 para calcular o fatorial\nDigite 10 para calcular a sequencia de fibonacci"
+requerir_operando1_soma:        .asciiz "Digite a primeira parcela da soma:\n"
+requerir_operando2_soma:        .asciiz "Digite a segunda parcela da soma:\n"
+requerir_operando1_sub:         .asciiz "Digite o aditivo da subtracao:\n"
+requerir_operando2_sub:         .asciiz "Digite o subtrativo da subtracao:\n"
 requerir_operando1_mult:        .asciiz "Digite o fator 1 da multiplicacao que deseja calcular\n"
 requerir_operando2_mult:        .asciiz "Digite o fator 2 da multiplicacao que deseja calcular\n"
 requerir_operando1_div:         .asciiz "Digite o dividendo da divisoa que deseja calcular\n"
@@ -283,7 +283,7 @@ tabuada:
 
 imc:
 	mul $t0, $a1, $a1 #t0 = altura^2
-	div $v0, $a0, $a1  #v0 = ao/a1
+	div $v0, $a0, $t0  #v0 = ao/a1
 	jr $ra
 
 # Sub-rotina que recebe como parametro o numero, o qual
