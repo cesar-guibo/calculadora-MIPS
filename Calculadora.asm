@@ -1,8 +1,4 @@
-# Dvisao deve retornar o resto ?
-# TODO Strings que devem ser impressas
-# No caso IMC, peso primeiro, altura dps
-# TODO imprime_resultado
-# TODO tabuada 
+# Dvisao deve retornar o resto ?W
     .data
 
     .align 0
@@ -257,7 +253,7 @@ potencia_caso_base:
     move $v0, $a0                               # $v0 = $a0
     jr $ra                                      # Retorna $v0
 
-
+#Sub-rotina que recebe o radicando em $a0 e retorna o resultado em v0
 raiz_quadrada:
 	add $t0, $a0, $zero                     #t0 = a0
 	li $t1, 0				#t1 = 0
@@ -280,6 +276,8 @@ loop_raiz:
 	blt $t1, $t3, loop_raiz			#if t1<t3, loop
 	move $v0, $t2				#Retorna t2
 	jr $ra
+#Sub-rotina que recebe o número que queremos a tabuada em $a0 e imprime a sua tabuada inteira, de 1 a 10
+#Nao tem retorno
 tabuada:
 	li $t0, 1 				#t0 = 0
 	add $t1, $a0, $zero			#t1 = a0
@@ -310,7 +308,7 @@ loop_tabuada:
 	syscall 
 	blt  $t0, $t3, loop_tabuada	#if t0<10 loop
 	jr $ra
-
+#Sub-rotina que recebe o peso em $a0 e a altura em $a1 e retorna o IMC em $v0
 imc:
 	mul $t0, $a1, $a1 #t0 = altura^2
 	div $v0, $a0, $t0  #v0 = ao/a1
