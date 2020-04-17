@@ -283,7 +283,7 @@ tabuada:
 
 imc:
 	mul $t0, $a1, $a1 #t0 = altura^2
-	div $v0, $a0, $a1  #v0 = ao/a1
+	div $v0, $a0, $t0  #v0 = ao/a1
 	jr $ra
 
 # Sub-rotina que recebe como parametro o numero, o qual
