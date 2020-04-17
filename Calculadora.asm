@@ -1,17 +1,20 @@
 #Feito por: Cesar Guibo e Leonardo Fonseca Pinheiro
 # Dvisao deve retornar o resto ?
+# A sequencia de fibonacci deve ser toda impressa ou so o indice?
+
     .data
 
     .align 0
 espaco:				.asciiz " "
-requerir_id_operacao:           .asciiz "******  MENU  ******\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDIgite 8 para calcular o IMC\nDIgite 9 para calcular o fatorial\nDigite 10 para calcular um numero da sequencia de fibonacci\nDigite 0 para sair\n"
+enter:				.asciiz "\n"
+requerir_id_operacao:           .asciiz "******  MENU  ******\nDigite 0 para sair\nDigite 1 para soma\nDigite 2 para subtracao\nDigite 3 para multiplicacao\nDigite 4 para divisao\nDigite 5 para potenciacao\nDigite 6 para radiciacao\nDigite 7 para tabuada\nDIgite 8 para calcular o IMC\nDIgite 9 para calcular o fatorial\nDigite 10 para calcular um numero da sequencia de fibonacci\n"
 requerir_operando1_soma:        .asciiz "Digite a primeira parcela da soma que deseja calcular:\n"
 requerir_operando2_soma:        .asciiz "Digite a segunda parcela da soma que deseja calcular:\n"
 requerir_operando1_sub:         .asciiz "Digite o aditivo da subtracao que deseja calcular\n"
 requerir_operando2_sub:         .asciiz "Digite o subtrativo da subtracao que deseja calcular\n"
 requerir_operando1_mult:        .asciiz "Digite o fator 1 da multiplicacao que deseja calcular\n"
 requerir_operando2_mult:        .asciiz "Digite o fator 2 da multiplicacao que deseja calcular\n"
-requerir_operando1_div:         .asciiz "Digite o dividendo da divisoa que deseja calcular\n"
+requerir_operando1_div:         .asciiz "Digite o dividendo da divisao que deseja calcular\n"
 requerir_operando2_div:         .asciiz "Digite o divisor da divisao que deseja calcular:\n"
 requerir_operando1_pot:         .asciiz "Digite a base da potencia que deseja calcular:\n"
 requerir_operando2_pot:         .asciiz "Digite o expoente da potencia que desja calcular:\n"
@@ -22,7 +25,7 @@ requerir_operando2_imc:         .asciiz "Digite a altura:\n"
 requerir_operando_fatorial:     .asciiz "Digite o numero que deseja calcular o fatorial:\n"
 requerir_operando_fibonacci:    .asciiz "Digite o indice da sequencia de fibonacci que deseja calcular:\n"
 id_invalido: 			.asciiz "O id da operacao digitado nao e valido\n"
-string_precede_resultado:       .asciiz "Resultado: \n"
+string_precede_resultado:       .asciiz "Resultado: "
 
     .align 2
 cases_table: .word case_sair, case_soma, case_subtracao, case_multiplicacao, 
@@ -225,25 +228,23 @@ divisao:
 potencia:
     beq $a1, 1, potencia_caso_base              # Se o expoente for 1 jump to potencia_caso_base
     
-    move $t0, $a0                               # Guarda o valor armazenado em $a0 em $t0
-    move $t1, $a1                               # Guarda o valor armazenado em $a1 em $t1
-    li $t2, 2                                   # Deixa 2 carregado em $t2
+    li $t0, 2                                   # Deixa 2 carregado em $t0 para ser usado posteriormente
 
-    subi $sp, $sp, 12                           # Cresce a stack em 12 posições 
+    subi $sp, $sp, 12                           # Cresce a stack em 12 enderecos
     sw $ra, 8($sp)                              # Salva $ra na stack
     sw $a0, 4($sp)                              # Salva $a0 na stack
     sw $a1, 0($sp)                              # Salva $a1 na stack
 
-    mul $a0, $t0, $t0                           # $a0 = $t0 * $t0
-    div $a1, $t1, $t2                           # $a1 = $t1 / 2 
+    mul $a0, $a0, $a0                           # $a0 = $t0 * $t0
+    div $a1, $a1, $t0                           # $a1 = $t1 / 2 
     jal potencia                                # Chama sub-rotina potencia recursivamente
 
     lw $ra, 8($sp)                              # Recupera $ra da stack
     lw $a0, 4($sp)                              # Recupera $a0 da stack
     lw $a1, 0($sp)                              # Recupera $a1 da stack
-    addi $sp, $sp, 12                           # Encolhe a stack em 12 posições
+    addi $sp, $sp, 12                           # Encolhe a stack em 12 enderecos
 
-    rem $t3, $a1, $t2                           # Verifica se o expoente é par
+    rem $t3, $a1, $t0                           # Verifica se o expoente é par
     bne $t3, $zero, potencia_expoente_impar     # Se o expoente for par jump to potencia_expoente_impar
 potencia_expoente_par:
     jr $ra                                      # Retorna $v0
@@ -277,8 +278,10 @@ loop_raiz:
 	blt $t1, $t3, loop_raiz			#if t1<t3, loop
 	move $v0, $t2				#Retorna t2
 	jr $ra
-#Sub-rotina que recebe o n�mero que queremos a tabuada em $a0 e imprime a sua tabuada inteira, de 1 a 10
-#Nao tem retorno
+
+
+# Sub-rotina que recebe o n�mero que queremos a tabuada em $a0 e 
+# imprime a sua tabuada inteira, de 1 a 10. Nao tem retorno
 tabuada:
 	li $t0, 1 				#t0 = 0
 	add $t1, $a0, $zero			#t1 = a0
@@ -309,72 +312,75 @@ loop_tabuada:
 	syscall 
 	blt  $t0, $t3, loop_tabuada	#if t0<10 loop
 	jr $ra
+
+
 #Sub-rotina que recebe o peso em $a0 e a altura em $a1 e retorna o IMC em $v0
 imc:
 	mul $t0, $a1, $a1 #t0 = altura^2
 	div $v0, $a0, $t0  #v0 = ao/a1
 	jr $ra
 
+
 # Sub-rotina que recebe como parametro o numero, o qual
 # se deseja calcular o fatorial em $a0 e retorna o valor
 # do fatorial em $v0
 fatorial:
-    slti $t0, $a0, 2
-    bne $t0, $zero, fatorial_base_case
+    slti $t0, $a0, 2                            #$t0 = ($a0 < 2)
+    bne $t0, $zero, fatorial_base_case          # Se ($t0 != 0) jump to fatorial_base_case
 
-    subi $sp, $sp, 8
-    sw $ra, 4($sp)
-    sw $a0, 0($sp)
+    subi $sp, $sp, 8                            # Cresce a stack em 8 enderecos
+    sw $ra, 4($sp)                              # Salva o return address na stack
+    sw $a0, 0($sp)                              # Salva o valor de $a0 na stack
 
-    subi $a0, $a0, 1
-    jal fatorial
+    subi $a0, $a0, 1                            # $a0 = $a0 - 1
+    jal fatorial                                # Chama recursivamente fatorial
 
-    lw $a0, 0($sp)
-    lw $ra, 4($sp)
-    addi $sp, $sp, 8
+    lw $a0, 0($sp)                              # Recupera o valor de $a0 da stack
+    lw $ra, 4($sp)                              # Recupera o return address da stack
+    addi $sp, $sp, 8                            # Enclohe a stack em 8 enderecos
 
-    mul $v0, $a0, $v0
+    mul $v0, $a0, $v0                           # $v0 = $a0 * fatorial($a0 - 1)
 
     jr $ra
 
 fatorial_base_case:
-    li $v0, 1
+    li $v0, 1                                   # Caso base fatorial(0) == fatorial(1) == 1
     jr $ra
 
 # Sub-rotina que recebe como parametro o indice da 
 # sequencia de fibonacci desejado em $a0 e retorna 
 # o valor desse numero de fibonacci
 fibonacci:
-    beq $a0, $zero fibonacci_base_case_zero
-    beq $a0, 1, fibonacci_base_case_one
+    beq $a0, $zero fibonacci_base_case_zero     # Caso base da recursao no qual $a0 == 0
+    beq $a0, 1, fibonacci_base_case_one         # Caso base da recursao no qual $a0 == 1
 
-    subi $sp, $sp, 12
-    sw $ra, 8($sp)
-    sw $a0, 4($sp)
-    sw $s0, 0($sp) 
+    subi $sp, $sp, 12                           # Cresce a stack em 12 enderecos
+    sw $ra, 8($sp)                              # Salva o return address na stack
+    sw $a0, 4($sp)                              # Salva o valor de $a0 na stack
+    sw $s0, 0($sp) 		                # Salva o valor de $s0 na stack
    
-    subi $a0, $a0, 1
-    jal fibonacci
-    move $s0, $v0
+    subi $a0, $a0, 1                            # Carrega $a0 - 1 em $a0
+    jal fibonacci                               # Chama recursivamente fibonacci
+    move $s0, $v0                               # Salva o valor retornado em $s0
 
-    subi $a0, $a0, 1
-    jal fibonacci
+    subi $a0, $a0, 1                            # Carrega $a0 - 1, ou seja o valor inicial de $a0 - 2, em $a0
+    jal fibonacci                               # Chama recursivamente fibonacci
 
-    add $v0, $s0, $v0
+    add $v0, $s0, $v0                           # $v0 = fibonacci($a0 - 1) + fibonacci($a0 - 2)
     
-    lw $s0, 0($sp) 
-    lw $a0, 4($sp)
-    lw $ra, 8($sp)
-    addi $sp, $sp, 12
+    lw $s0, 0($sp)                              # Recupera o valor de $s0 da stack
+    lw $a0, 4($sp)                              # Recupera o valor de $a0 da stack
+    lw $ra, 8($sp)                              # Recupera o return address da stack
+    addi $sp, $sp, 12                           # Encolhe a stack em 12 enderecos
 
     jr $ra
 
 fibonacci_base_case_zero:
-	move $v0, $zero
+	move $v0, $zero                         # fibonacci(0) == 0
 	jr $ra
 
 fibonacci_base_case_one:
-	li $v0, 1
+	li $v0, 1                               # fibonacci(0) == 1
 	jr $ra
 
 
@@ -413,18 +419,28 @@ le_operandos_end:
     move $a0, $t0                   # Restaura o valor inicial de $a0
     jr $ra
 
-
+# Sub-rotina que recebe como parametros o id da operacao
+# que retornou o resultado em $a0 e o resultado retornado
+# em $a1. Nao retorna nada
 imprime_resultado:
-    move $t0, $a0
+    # Se o id de operacao corresponder a tabuada nao imprime nada
+    beq $a0, 7, imprime_resultado_end  # Se $a0 == 7 jump to imprime_resultado_end
+    
+    move $t0, $a0                      # Salva o valor de $a0 em $t0 
 
-    la $a0, string_precede_resultado
-    li $v0, 4
+    la $a0, string_precede_resultado   # Carrega string que precede o resultado numerico em $a0
+    li $v0, 4                          # Valor para a syscall imprimir uma string
     syscall
 
-    move $a0, $a1
-    li $v0, 1
+    move $a0, $a1                      # Carrega o resultado da operacao realizada em $0
+    li $v0, 1                          # Valor para a syscall imprimir um inteiro
+    syscall
+    
+    la $a0, enter			# Carrega string com \n em $a0
+    li $v0, 4                          # Valor para a syscall imprimir uma string
     syscall
 
-    move $a0, $t0
+    move $a0, $t0                      # Restaura o valor inicial de $a0
 
+imprime_resultado_end:
     jr $ra
