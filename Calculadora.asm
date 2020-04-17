@@ -1,9 +1,12 @@
+#Feito por: Cesar Guibo e Leonardo Fonseca Pinheiro
+# Dvisao deve retornar o resto ?
 # A sequencia de fibonacci deve ser toda impressa ou so o indice?
 
     .data
 
     .align 0
 espaco:				.asciiz " "
+<<<<<<< HEAD
 
 requerir_id_operacao:
 	.asciiz 
@@ -71,8 +74,12 @@ requerir_operando_fibonacci:
 id_invalido: 			
 	.asciiz "O id da operacao digitado nao e valido\n"
 
-string_precede_resultado:       
-	.asciiz "Resultado: \n"
+string_precede_resultado: 
+	.asciiz "Resultado: "
+
+enter:				
+	.asciiz "\n"
+
 
     .align 2
 cases_table: .word case_sair, case_soma, case_subtracao, case_multiplicacao, 
@@ -480,6 +487,10 @@ imprime_resultado:
 
     move $a0, $a1                      # Carrega o resultado da operacao realizada em $0
     li $v0, 1                          # Valor para a syscall imprimir um inteiro
+    syscall
+    
+    la $a0, enter			# Carrega string com \n em $a0
+    li $v0, 4                          # Valor para a syscall imprimir uma string
     syscall
 
     move $a0, $t0                      # Restaura o valor inicial de $a0
