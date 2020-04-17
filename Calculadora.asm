@@ -52,7 +52,7 @@ main_loop:
 
     # Vai para o case da operacao selecionada
     sll $t0, $s2, 2                         # $t0 = id da operacao * 4
-    move $t0, $s0                           # $t0 = &cases_table[id_operacao]
+    add $t0, $t0, $s0                           # $t0 = &cases_table[id_operacao]
     lw $t1, 0($t0)                          # $t1 = cases_table[id_operacao] 
     jr $t1                                  # Jump to cases_table[id_operacao] 
 
