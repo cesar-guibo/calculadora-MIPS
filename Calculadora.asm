@@ -1,4 +1,5 @@
-# Dvisao deve retornar o resto ?W
+#Feito por: Cesar Guibo e Leonardo Fonseca Pinheiro
+# Dvisao deve retornar o resto ?
     .data
 
     .align 0
