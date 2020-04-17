@@ -3,8 +3,6 @@
 # No caso IMC, peso primeiro, altura dps
 # TODO imprime_resultado
 # TODO raiz_quadrada
-# TODO fatorial
-# TODO fibonacci
 # TODO tabuada 
     .data
 
@@ -258,7 +256,21 @@ potencia_caso_base:
 
 
 raiz_quadrada:
+	add $t0, $a0, $zero                     #t0 = a0
+	li $t1, 0				#t1 = 0
+	li $t5, 2				#t5 = 2
+	li $t6, 1				#t6 = 1
+	add $t2, $a0, $zero			#t2 = a0
+	div $t3, $t0, 2				#t3 = a0/2
+	jal loop_raiz
 
+loop_raiz:
+	div $t4, $t0, $t2			#t4 = t0/t2
+	add $t4, $t4, $t2			#t4 = t4 + t2
+	div $t2, $t4, $t5			#t2 = t4/2
+	add $t1, $t1, $t6			#t1++
+	blt $t1, $t3, loop			#if t1<t3, loop
+	move $t2, $v0				#Retorna t2
 tabuada:
 
 imc:
