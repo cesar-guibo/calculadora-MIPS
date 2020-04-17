@@ -406,7 +406,7 @@ le_operandos:
     move $t3, $v0                   # Salva o primeiro operando em $t3
     
     li $v0, 4                       # Valor para syscall imprimir string 
-    move $a0, $a1                   # Carrega a string que requisita o operando1 como argumento para syscall
+    move $a0, $a2                   # Carrega a string que requisita o operando1 como argumento para syscall
     syscall                         
 
     li $v0, 5                       # Valor para syscall ler um int
