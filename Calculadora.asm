@@ -16,7 +16,7 @@ requerir_operando2_mult:        .asciiz "\n"
 requerir_operando1_div:         .asciiz "\n"
 requerir_operando2_div:         .asciiz "\n"
 requerir_operando1_pot:         .asciiz "\n"
-requrir_operando2_pot:          .asciiz "\n"
+requerir_operando2_pot:          .asciiz "\n"
 requerir_operando_raiz:         .asciiz "\n"
 requerir_operando_tabuada:      .asciiz "\n"
 requerir_operando1_imc:         .asciiz "\n"
@@ -71,7 +71,7 @@ case_soma:
 
     j cases_end                     
 
-#Equivalente à soma, mas com subtração
+#Equivalente ï¿½ soma, mas com subtraï¿½ï¿½o
 case_subtracao:
     li $a0, 2
     la $a1, requerir_operando1_sub
@@ -84,7 +84,7 @@ case_subtracao:
 
     j cases_end
 
-#Equivalente à soma, mas com multiplicação
+#Equivalente ï¿½ soma, mas com multiplicaï¿½ï¿½o
 case_multiplicacao:
     li $a0, 2
     la $a1, requerir_operando1_mult
@@ -97,7 +97,7 @@ case_multiplicacao:
 
     j cases_end
     
-#Equivalente à soma, mas com divisão
+#Equivalente ï¿½ soma, mas com divisï¿½o
 case_divisao:
     li $a0, 2
     la $a1, requerir_operando1_div
@@ -110,7 +110,7 @@ case_divisao:
 
     j cases_end
 
-#Equivalente à soma, mas com pontenciação
+#Equivalente ï¿½ soma, mas com pontenciaï¿½ï¿½o
 case_potencia:
     li $a0, 2
     la $a1, requerir_operando1_pot
@@ -133,7 +133,7 @@ case_raiz_quadrada:
     
     j cases_end
 
-#Equivalente à raiz, mas com tabuada
+#Equivalente ï¿½ raiz, mas com tabuada
 case_tabuada:
     li $a0, 1
     la $a1, requerir_operando_tabuada
@@ -144,7 +144,7 @@ case_tabuada:
     
     j cases_end
     
-#Equivalente à soma, mas com IMC
+#Equivalente ï¿½ soma, mas com IMC
 case_imc:
     li $a0, 2
     la $a1, requerir_operando1_imc
@@ -157,7 +157,7 @@ case_imc:
     
     j cases_end
 
-#Equivalente à raiz, mas com fatorial
+#Equivalente ï¿½ raiz, mas com fatorial
 case_fatorial:
     li $a0, 1
     la $a1, requerir_operando_fatorial
@@ -168,7 +168,7 @@ case_fatorial:
 
     j cases_end
 
-#Equivalente à raiz, mas com a sequencia de Fibonacci
+#Equivalente ï¿½ raiz, mas com a sequencia de Fibonacci
 case_fibonacci:
     li $a0, 1
     la $a1, requerir_operando_fibonacci
@@ -184,7 +184,7 @@ cases_end:
     
     j main_loop
 
-#Cuida do caso no qual o id inserido é invalido
+#Cuida do caso no qual o id inserido ï¿½ invalido
 id_operacao_invalido:
     la $a0, id_invalido
     syscall
@@ -308,7 +308,7 @@ fibonacci:
     subi $a0, $a0, 1
     jal fibonacci
 
-    addi $v0, $s0, $v0
+    add $v0, $s0, $v0
     
     lw $s0, 0($sp) 
     lw $a0, 4($sp)
@@ -343,7 +343,7 @@ le_operandos:
     syscall
 
     # Se o numero de operandos que deve se ler e apenas um, finaliza operacao
-    bnei $t0, 2 le_operandos_end    # Se $t0 != 2 jump to le_operandos_end
+    bne $t0, 2 le_operandos_end    # Se $t0 != 2 jump to le_operandos_end
 
     move $t3, $v0                   # Salva o primeiro operando em $t3
     
