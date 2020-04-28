@@ -264,6 +264,7 @@ divisao:
 # Sub-rotina que recebe a base em $a0 e o expoente em $a1 e 
 # retorna o resultado de $ao^$a1.
 potencia:
+    beq $a1, 0, potencia_elevado_zero           # Se o expoente for 0 jump to potencia_elevado_zero
     beq $a1, 1, potencia_caso_base              # Se o expoente for 1 jump to potencia_caso_base
     
     li $t0, 2                                   # Deixa 2 carregado em $t0 para ser usado posteriormente
@@ -292,6 +293,9 @@ potencia_expoente_impar:
 potencia_caso_base:
     move $v0, $a0                               # $v0 = $a0
     jr $ra                                      # Retorna $v0
+potencia_elevado_zero:
+    li $v0, 1
+    jr $ra
 
 #Sub-rotina que recebe o radicando em $a0 e retorna o resultado em v0
 raiz_quadrada:
@@ -318,7 +322,7 @@ loop_raiz:
 	jr $ra
 
 
-# Sub-rotina que recebe o número que queremos a tabuada em $a0 e 
+# Sub-rotina que recebe o nï¿½mero que queremos a tabuada em $a0 e 
 # imprime a sua tabuada inteira, de 1 a 10. Nao tem retorno
 tabuada:
 	li $t0, 1 				#t0 = 0
@@ -389,40 +393,63 @@ fatorial_base_case:
     jr $ra
 
 # Sub-rotina que recebe como parametro o indice da 
-# sequencia de fibonacci desejado em $a0 e retorna 
-# o valor desse numero de fibonacci
+# sequencia de fibonacci ate o qual se deve imprimir
 fibonacci:
-    beq $a0, $zero fibonacci_base_case_zero     # Caso base da recursao no qual $a0 == 0
-    beq $a0, 1, fibonacci_base_case_one         # Caso base da recursao no qual $a0 == 1
+    subi $sp, $sp, 24
+    sw $s3, 20($sp)
+    sw $s2, 16($sp)
+    sw $s1, 12($sp)
+    sw $s0, 8($sp)
+    sw $ra, 4($sp)
+    sw $a0, 0($sp)
 
-    subi $sp, $sp, 12                           # Cresce a stack em 12 enderecos
-    sw $ra, 8($sp)                              # Salva o return address na stack
-    sw $a0, 4($sp)                              # Salva o valor de $a0 na stack
-    sw $s0, 0($sp) 		                # Salva o valor de $s0 na stack
-   
-    subi $a0, $a0, 1                            # Carrega $a0 - 1 em $a0
-    jal fibonacci                               # Chama recursivamente fibonacci
-    move $s0, $v0                               # Salva o valor retornado em $s0
-
-    subi $a0, $a0, 1                            # Carrega $a0 - 1, ou seja o valor inicial de $a0 - 2, em $a0
-    jal fibonacci                               # Chama recursivamente fibonacci
-
-    add $v0, $s0, $v0                           # $v0 = fibonacci($a0 - 1) + fibonacci($a0 - 2)
+    move $s0, $zero
+    li $s1, 1
+    move $s2, $zero
+    move $s3, $a0
     
-    lw $s0, 0($sp)                              # Recupera o valor de $s0 da stack
-    lw $a0, 4($sp)                              # Recupera o valor de $a0 da stack
-    lw $ra, 8($sp)                              # Recupera o return address da stack
-    addi $sp, $sp, 12                           # Encolhe a stack em 12 enderecos
+    move $a0, $s0
+    jal fibonacci_imprime
+    
+fibonacci_loop:
+    slt $t0, $s2, $s3
+    beq $t0, $zero, fibonacci_loop_end
 
+    move $a0, $s1
+    jal fibonacci_imprime
+
+    move $t0, $s1 
+    add $s1, $s1, $s0
+    move $s0, $t0
+    
+    addi $s2, $s2, 1
+    j fibonacci_loop
+
+fibonacci_loop_end:
+    lw $s3, 20($sp)
+    lw $s2, 16($sp)
+    lw $s1, 12($sp)
+    lw $s0, 8($sp)
+    lw $ra, 4($sp)
+    lw $a0, 0($sp)
+    addi $sp, $sp, 24
     jr $ra
 
-fibonacci_base_case_zero:
-	move $v0, $zero                         # fibonacci(0) == 0 jr $ra
+# Sub-rotina auxiliar da sub-rotina fibonacci
+# recebe o numero que deve ser impresso em
+# $a0 e nao retorna nada
+fibonacci_imprime:
+    li $v0, 1                               # Codigo para syscall imprimir numero inteiro
+    syscall                                 # O numero que deve ser impresso ja esta em $a0
 
-fibonacci_base_case_one:
-	li $v0, 1                               # fibonacci(0) == 1
-	jr $ra
+    move $t0, $a0                           # Salva o valor de $a0
 
+    li $v0, 4                               # Codigo para syscall imprimir strign
+    la $a0, espaco                          # Passa como argumento ' ' para ser imrpimido 
+    syscall 				    # Imprime ' '
+
+    move $a0, $t0                           # Restora o valor de $a0
+    jr $ra
 
 
 # Sub-rotina que recebe como parametros o numero de operandos
@@ -463,8 +490,9 @@ le_operandos_end:
 # que retornou o resultado em $a0 e o resultado retornado
 # em $a1. Nao retorna nada
 imprime_resultado:
-    # Se o id de operacao corresponder a tabuada nao imprime nada
+    # Se o id de operacao corresponder a tabuada ou fibonacci, nao imprime nada
     beq $a0, 7, imprime_resultado_end  # Se $a0 == 7 jump to imprime_resultado_end
+    beq $a0, 10, imprime_resultado_end # Se $a0 == 10 jump to imprime_resultado_end
     
     move $t0, $a0                      # Salva o valor de $a0 em $t0 
 
