@@ -63,8 +63,9 @@ string_precede_resultado:
 
 enter:				
 	.asciiz "\n"
-
-
+invalido:
+	.asciiz "Um dos operandos inseridos e invalido."
+	
     .align 2
 cases_table: .word case_sair, case_soma, case_subtracao, case_multiplicacao, 
                   case_divisao, case_potencia, case_raiz_quadrada,
@@ -154,7 +155,8 @@ case_potencia:
     li $a0, 2
     la $a1, requerir_operando1_pot
     la $a2, requerir_operando2_pot
-    jal le_operandos    
+    jal le_operandos
+    blt $v1, $zero, num_invalido #Verifica se o número é negativo    
 
     move $a0, $v0
     move $a1, $v1
@@ -166,7 +168,7 @@ case_raiz_quadrada:
     li $a0, 1 # Carrega o numero de operandos em $a0
     la $a1, requerir_operando_raiz # Carrega a string que pede o operando da raiz em $a1 
     jal le_operandos    # Chama sub_rotina le operandos
-
+    blt $v0, $zero, num_invalido #Verifica se o número é negativo
     move $a0, $v0 # Carrega o operando obtido por le_operandos em $a0
     jal raiz_quadrada # Chama sub-rotina raiz
     
@@ -188,7 +190,10 @@ case_imc:
     li $a0, 2
     la $a1, requerir_operando1_imc
     la $a2, requerir_operando2_imc
-    jal le_operandos    
+    jal le_operandos
+    blt $v0, $zero, num_invalido #Verifica se o número é negativo
+    blt $v1, $zero, num_invalido #Verifica se o número é negativo
+        
 
     move $a0, $v0
     move $a1, $v1
@@ -200,7 +205,8 @@ case_imc:
 case_fatorial:
     li $a0, 1
     la $a1, requerir_operando_fatorial
-    jal le_operandos    
+    jal le_operandos
+    blt $v0, $zero, num_invalido #Verifica se o número é negativo
 
     move $a0, $v0
     jal fatorial
@@ -211,7 +217,8 @@ case_fatorial:
 case_fibonacci:
     li $a0, 1
     la $a1, requerir_operando_fibonacci
-    jal le_operandos    
+    jal le_operandos
+    blt $v0, $zero, num_invalido #Verifica se o número é negativo
 
     move $a0, $v0
     jal fibonacci
@@ -512,3 +519,12 @@ imprime_resultado:
 
 imprime_resultado_end:
     jr $ra
+
+num_invalido:
+    la $a0, invalido
+    li $v0, 4
+    syscall
+    la $a0, enter			# Carrega string com \n em $a0
+    li $v0, 4                          # Valor para a syscall imprimir uma string
+    syscall
+    j main_loop
